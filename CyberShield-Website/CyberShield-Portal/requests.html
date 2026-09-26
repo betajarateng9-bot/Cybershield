@@ -1,0 +1,60 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>CyberShield — My Requests</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link rel="stylesheet" href="portal.css">
+</head>
+<body class="dashboard-body">
+
+    <nav class="dashboard-nav">
+        <div class="nav-brand">
+            <img src="logo.png" alt="CyberShield">
+            <span>CyberShield</span>
+        </div>
+        <div class="nav-links">
+            <a href="dashboard.html" class="nav-link">Dashboard</a>
+            <a href="profile.html" class="nav-link">Profile</a>
+            <a href="requests.html" class="nav-link active">My Requests</a>
+            <button id="logoutBtn" class="logout-btn">Log Out</button>
+        </div>
+    </nav>
+
+    <main class="dashboard-main requests-bg">
+        <h1>My Requests</h1>
+
+        <div class="request-form-card">
+            <h3>Submit a New Request</h3>
+            <form id="requestForm">
+                <label for="requestType">Request Type</label>
+                <select id="requestType" required>
+                    <option value="">Select a type</option>
+                    <option value="service">Service Request</option>
+                    <option value="security_assessment">Security Assessment</option>
+                    <option value="support_ticket">Support Ticket</option>
+                </select>
+
+                <label for="subject">Subject</label>
+                <input type="text" id="subject" placeholder="Brief description of your request" required>
+
+                <label for="description">Description</label>
+                <textarea id="description" rows="4" placeholder="Provide more details about your request..." required></textarea>
+
+                <button type="submit">Submit Request</button>
+                <p id="requestError" class="error"></p>
+            </form>
+        </div>
+
+        <h2 class="requests-heading">Request History</h2>
+        <div id="requestsList">
+            <p>Loading your requests...</p>
+        </div>
+    </main>
+
+    <script src="js/config.js"></script>
+    <script src="portal.js"></script>
+</body>
+</html>

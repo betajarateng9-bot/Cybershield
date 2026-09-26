@@ -1,0 +1,52 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>CyberShield — Create Account</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link rel="stylesheet" href="portal.css">
+</head>
+<body>
+
+    <div class="login-container">
+        <img src="logo.png" alt="CyberShield" class="login-logo">
+
+        <h2>Create Account</h2>
+        <p style="color: #667788; font-size: 13px; margin-bottom: 10px;">Join CyberShield to protect your digital assets</p>
+
+        <form id="registerForm">
+            <label for="fullName">Full Name</label>
+            <input type="text" id="fullName" placeholder="John Doe" required autocomplete="name">
+
+            <label for="email">Email Address</label>
+            <input type="email" id="email" placeholder="you@example.com" required autocomplete="email">
+
+            <label for="phone">Phone Number</label>
+            <input type="text" id="phone" placeholder="+254 712 345 678" required autocomplete="tel">
+
+            <label for="organization">Organization (Optional)</label>
+            <input type="text" id="organization" placeholder="Company name">
+
+            <label for="industry">Industry (Optional)</label>
+            <input type="text" id="industry" placeholder="e.g. Healthcare, Finance">
+
+            <label for="password">Password</label>
+            <div class="password-wrapper">
+                <input type="password" id="password" placeholder="Minimum 8 characters" required autocomplete="new-password">
+                <span id="togglePassword" class="toggle-eye"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z"/><circle cx="12" cy="12" r="3"/></svg></span>
+            </div>
+
+            <button type="submit">Create Account</button>
+
+            <p id="errorMessage" class="error"></p>
+        </form>
+
+        <p class="switch-link">Already have an account? <a href="login.html">Sign in</a></p>
+    </div>
+
+    <script src="js/config.js"></script>
+    <script src="portal.js"></script>
+</body>
+</html>

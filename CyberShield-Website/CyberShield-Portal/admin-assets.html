@@ -1,0 +1,59 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>CyberShield — Asset Inventory</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link rel="stylesheet" href="portal.css">
+</head>
+<body class="dashboard-body">
+
+    <nav class="dashboard-nav">
+        <div class="nav-brand">
+            <img src="logo.png" alt="CyberShield">
+            <span>CyberShield</span>
+        </div>
+        <div class="nav-links">
+            <a href="admin-dashboard.html" class="nav-link">Dashboard</a>
+            <a href="admin-customers.html" class="nav-link">Customers</a>
+            <a href="admin-contacts.html" class="nav-link">Contacts</a>
+            <a href="admin-requests.html" class="nav-link">Requests</a>
+            <a href="admin-users.html" class="nav-link">Users</a>
+            <a href="admin-assets.html" class="nav-link active">Assets</a>
+            <a href="admin-alerts.html" class="nav-link">Alerts</a>
+            <a href="admin-audit-logs.html" class="nav-link">Audit Log</a>
+            <button id="logoutBtn" class="logout-btn">Log Out</button>
+        </div>
+    </nav>
+
+    <main class="dashboard-main">
+        <h1>Asset Inventory</h1>
+
+        <div class="request-form-card">
+            <h3>Register a New Asset</h3>
+            <form id="assetForm">
+                <label for="assetCustomerId">Customer ID</label>
+                <input type="number" id="assetCustomerId" required>
+
+                <label for="assetName">Asset Name</label>
+                <input type="text" id="assetName" placeholder="e.g. Main Web Server" required>
+
+                <label for="assetTarget">Target (hostname or IP)</label>
+                <input type="text" id="assetTarget" placeholder="e.g. 127.0.0.1" required>
+
+                <button type="submit">Register Asset</button>
+                <p id="assetError" class="error"></p>
+            </form>
+        </div>
+
+        <div id="assetsTableWrapper">
+            <p>Loading assets...</p>
+        </div>
+    </main>
+
+    <script src="js/config.js"></script>
+    <script src="portal.js"></script>
+</body>
+</html>

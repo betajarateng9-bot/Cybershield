@@ -1,0 +1,654 @@
+/* =====================================
+   SERVICES PAGE
+===================================== */
+
+
+/* =====================================
+   HERO
+===================================== */
+
+.services-hero{
+
+    min-height:65vh;
+
+    display:flex;
+
+    align-items:center;
+
+    justify-content:center;
+
+    text-align:center;
+
+    padding:120px 8% 90px;
+
+    background:
+
+        linear-gradient(
+            rgba(4,13,21,.80),
+            rgba(4,13,21,.94)
+        ),
+
+        url("../images/server-room.jpg");
+
+    background-size:cover;
+
+    background-position:center;
+
+}
+
+
+.services-hero-content{
+
+    max-width:900px;
+
+}
+
+
+.services-hero h1{
+
+    color:white;
+
+    font-size:64px;
+
+    line-height:1.1;
+
+    margin:20px 0;
+
+}
+
+
+.services-hero p{
+
+    color:#c5d0d8;
+
+    max-width:750px;
+
+    margin:0 auto 35px;
+
+    font-size:18px;
+
+    line-height:1.8;
+
+}
+
+
+.services-hero-buttons{
+
+    display:flex;
+
+    justify-content:center;
+
+    align-items:center;
+
+    gap:18px;
+
+    flex-wrap:wrap;
+
+}
+
+
+
+/* =====================================
+   INTRO
+===================================== */
+
+.services-intro{
+
+    padding:100px 10% 50px;
+
+    background:#07131f;
+
+}
+
+
+.services-intro .section-title{
+
+    max-width:850px;
+
+    margin:auto;
+
+    text-align:center;
+
+}
+
+
+.services-intro .section-title p{
+
+    color:#bdc8d0;
+
+    line-height:1.8;
+
+    font-size:17px;
+
+    margin-top:20px;
+
+}
+
+
+
+/* =====================================
+   SERVICES LIST
+===================================== */
+
+.services-list{
+
+    padding:50px 10% 110px;
+
+    background:#07131f;
+
+}
+
+
+.service-detail{
+
+    display:grid;
+
+    grid-template-columns:120px 1fr;
+
+    gap:50px;
+
+    padding:65px 0;
+
+    border-bottom:1px solid rgba(255,255,255,.08);
+
+}
+
+
+.service-detail:last-child{
+
+    border-bottom:none;
+
+}
+
+
+.service-number{
+
+    font-size:38px;
+
+    font-weight:700;
+
+    color:#00abf0;
+
+}
+
+
+.service-detail-content{
+
+    max-width:850px;
+
+}
+
+
+.service-illustration{
+
+    margin-bottom:25px;
+
+    opacity:0.85;
+
+    transition:.3s;
+
+}
+
+
+.service-illustration svg{
+
+    max-width:100%;
+
+    height:auto;
+
+}
+
+
+.service-detail:hover .service-illustration{
+
+    opacity:1;
+
+    transform:scale(1.02);
+
+}
+
+
+.service-label{
+
+    color:#00abf0;
+
+    font-size:13px;
+
+    font-weight:700;
+
+    letter-spacing:2px;
+
+}
+
+
+.service-detail h2{
+
+    color:white;
+
+    font-size:38px;
+
+    margin:15px 0 20px;
+
+}
+
+
+.service-detail p{
+
+    color:#c2ccd4;
+
+    font-size:17px;
+
+    line-height:1.8;
+
+    max-width:800px;
+
+}
+
+
+.service-detail ul{
+
+    display:grid;
+
+    grid-template-columns:repeat(2,1fr);
+
+    gap:12px 30px;
+
+    padding:0;
+
+    margin-top:30px;
+
+    list-style:none;
+
+}
+
+
+.service-detail li{
+
+    color:#d8e0e5;
+
+    position:relative;
+
+    padding-left:25px;
+
+}
+
+
+.service-detail li::before{
+
+    content:"";
+
+    position:absolute;
+
+    left:0;
+
+    top:7px;
+
+    width:12px;
+
+    height:6px;
+
+    border-left:2px solid #00abf0;
+
+    border-bottom:2px solid #00abf0;
+
+    transform:rotate(-45deg);
+
+}
+
+
+
+/* =====================================
+   SECURITY APPROACH
+===================================== */
+
+.security-approach{
+
+    padding:110px 10%;
+
+    background:#081b29;
+
+}
+
+
+.security-approach .section-title{
+
+    text-align:center;
+
+    max-width:800px;
+
+    margin:auto;
+
+}
+
+
+.security-approach .section-title p{
+
+    color:#c1cbd2;
+
+    line-height:1.8;
+
+}
+
+
+.approach-grid{
+
+    display:grid;
+
+    grid-template-columns:repeat(5,1fr);
+
+    gap:18px;
+
+    margin-top:60px;
+
+}
+
+
+.approach-card{
+
+    padding:35px 25px;
+
+    background:#0d2333;
+
+    border:1px solid rgba(255,255,255,.08);
+
+    border-radius:15px;
+
+    transition:.35s;
+
+}
+
+
+.approach-card:hover{
+
+    transform:translateY(-8px);
+
+    border-color:#00abf0;
+
+    box-shadow:0 0 25px rgba(0,171,240,.18);
+
+}
+
+
+.approach-card span{
+
+    display:block;
+
+    color:#00abf0;
+
+    font-size:28px;
+
+    font-weight:700;
+
+    margin-bottom:25px;
+
+}
+
+
+.approach-card h3{
+
+    color:white;
+
+    font-size:23px;
+
+    margin-bottom:15px;
+
+}
+
+
+.approach-card p{
+
+    color:#b8c4cc;
+
+    line-height:1.7;
+
+}
+
+
+
+/* =====================================
+   CTA
+===================================== */
+
+.services-cta{
+
+    text-align:center;
+
+    padding:110px 10%;
+
+    background:
+
+        linear-gradient(
+            rgba(0,28,45,.95),
+            rgba(0,18,30,.98)
+        );
+
+}
+
+
+.services-cta h2{
+
+    color:white;
+
+    font-size:46px;
+
+    margin:20px 0;
+
+}
+
+
+.services-cta p{
+
+    color:#c5cfd6;
+
+    font-size:18px;
+
+    line-height:1.8;
+
+    max-width:700px;
+
+    margin:0 auto 30px;
+
+}
+
+
+
+/* =====================================
+   SERVICE ANIMATION
+===================================== */
+
+.service-detail{
+
+    opacity:0;
+
+    transform:translateY(30px);
+
+    transition:
+
+        opacity .7s ease,
+
+        transform .7s ease;
+
+}
+
+
+.service-detail.visible{
+
+    opacity:1;
+
+    transform:translateY(0);
+
+}
+
+
+
+/* =====================================
+   TABLET
+===================================== */
+
+@media (max-width:1100px){
+
+    .approach-grid{
+
+        grid-template-columns:repeat(3,1fr);
+
+    }
+
+    .services-hero h1{
+
+        font-size:54px;
+
+    }
+
+}
+
+
+
+/* =====================================
+   MOBILE
+===================================== */
+
+@media (max-width:768px){
+
+    .services-hero{
+
+        min-height:70vh;
+
+        padding:100px 6% 70px;
+
+    }
+
+
+    .services-hero h1{
+
+        font-size:42px;
+
+    }
+
+
+    .services-hero p{
+
+        font-size:16px;
+
+    }
+
+
+    .services-hero-buttons{
+
+        flex-direction:column;
+
+    }
+
+
+    .services-hero-buttons a{
+
+        width:100%;
+
+        text-align:center;
+
+    }
+
+
+    .services-intro{
+
+        padding:80px 6% 30px;
+
+    }
+
+
+    .services-list{
+
+        padding:30px 6% 80px;
+
+    }
+
+
+    .service-detail{
+
+        grid-template-columns:1fr;
+
+        gap:15px;
+
+        padding:50px 0;
+
+    }
+
+
+    .service-number{
+
+        font-size:30px;
+
+    }
+
+
+    .service-detail h2{
+
+        font-size:31px;
+
+    }
+
+
+    .service-detail ul{
+
+        grid-template-columns:1fr;
+
+    }
+
+
+    .security-approach{
+
+        padding:80px 6%;
+
+    }
+
+
+    .approach-grid{
+
+        grid-template-columns:1fr;
+
+    }
+
+
+    .services-cta{
+
+        padding:80px 6%;
+
+    }
+
+
+    .services-cta h2{
+
+        font-size:35px;
+
+    }
+
+}
+
+
+
+/* =====================================
+   SMALL MOBILE
+===================================== */
+
+@media (max-width:480px){
+
+    .services-hero h1{
+
+        font-size:34px;
+
+    }
+
+
+    .service-detail h2{
+
+        font-size:28px;
+
+    }
+
+
+    .service-detail p{
+
+        font-size:16px;
+
+    }
+
+}

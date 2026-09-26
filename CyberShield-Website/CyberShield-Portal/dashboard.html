@@ -1,0 +1,49 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>CyberShield — Dashboard</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link rel="stylesheet" href="portal.css">
+</head>
+<body class="dashboard-body">
+
+    <nav class="dashboard-nav">
+        <div class="nav-brand">
+            <img src="logo.png" alt="CyberShield">
+            <span>CyberShield</span>
+        </div>
+        <div class="nav-links">
+            <a href="dashboard.html" class="nav-link active">Dashboard</a>
+            <a href="profile.html" class="nav-link">Profile</a>
+            <a href="requests.html" class="nav-link">My Requests</a>
+            <button id="logoutBtn" class="logout-btn">Log Out</button>
+        </div>
+    </nav>
+
+    <main class="dashboard-main dashboard-bg">
+        <h1>Welcome to your Dashboard</h1>
+        <p>This is your CyberShield customer portal. From here you'll be able to manage service requests, track tickets, and view your account.</p>
+
+        <div class="stats-grid" style="margin-top: 40px;">
+            <div class="stat-box">
+                <h2>3</h2>
+                <p>Active Services</p>
+            </div>
+            <div class="stat-box">
+                <h2>24/7</h2>
+                <p>Monitoring</p>
+            </div>
+            <div class="stat-box">
+                <h2>100%</h2>
+                <p>Protection</p>
+            </div>
+        </div>
+    </main>
+
+    <script src="js/config.js"></script>
+    <script src="portal.js"></script>
+</body>
+</html>

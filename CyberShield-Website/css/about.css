@@ -1,0 +1,601 @@
+/* =====================================
+   ABOUT PAGE
+===================================== */
+
+
+/* =====================================
+   PAGE HERO
+===================================== */
+
+.page-hero{
+
+    min-height:55vh;
+
+    display:flex;
+
+    align-items:center;
+
+    justify-content:center;
+
+    text-align:center;
+
+    padding:120px 10% 80px;
+
+    background:
+
+        linear-gradient(
+            rgba(5,13,21,.82),
+            rgba(5,13,21,.92)
+        ),
+
+        url("../images/server-room.jpg");
+
+    background-size:cover;
+
+    background-position:center;
+
+}
+
+
+.page-hero-content{
+
+    max-width:850px;
+
+}
+
+
+.page-hero h1{
+
+    color:white;
+
+    font-size:60px;
+
+    line-height:1.15;
+
+    margin-bottom:25px;
+
+}
+
+
+.page-hero p{
+
+    color:#cbd5dc;
+
+    font-size:18px;
+
+    line-height:1.8;
+
+    max-width:700px;
+
+    margin:auto;
+
+}
+
+
+
+/* =====================================
+   ABOUT INTRODUCTION
+===================================== */
+
+.about-introduction{
+
+    display:grid;
+
+    grid-template-columns:1.5fr 1fr;
+
+    gap:70px;
+
+    padding:110px 10%;
+
+    background:#07131f;
+
+}
+
+
+.about-text h2{
+
+    color:white;
+
+    font-size:46px;
+
+    margin-bottom:25px;
+
+}
+
+
+.about-text p{
+
+    color:#c7d0d8;
+
+    line-height:1.9;
+
+    margin-bottom:20px;
+
+    font-size:17px;
+
+}
+
+
+.about-highlight{
+
+    display:flex;
+
+    align-items:center;
+
+    justify-content:center;
+
+}
+
+
+.about-highlight-card{
+
+    width:100%;
+
+    padding:55px 40px;
+
+    text-align:center;
+
+    background:#0d1f2e;
+
+    border:1px solid rgba(0,171,240,.25);
+
+    border-radius:20px;
+
+    box-shadow:0 0 40px rgba(0,171,240,.12);
+
+}
+
+
+.highlight-icon{
+
+    font-size:65px;
+
+    margin-bottom:20px;
+
+}
+
+
+.about-highlight-card h3{
+
+    color:white;
+
+    font-size:28px;
+
+    margin-bottom:15px;
+
+}
+
+
+.about-highlight-card p{
+
+    color:#b9c4cd;
+
+    line-height:1.8;
+
+}
+
+
+
+/* =====================================
+   MISSION & VISION
+===================================== */
+
+.mission-vision{
+
+    padding:110px 10%;
+
+    background:#081b29;
+
+}
+
+
+.mission-grid{
+
+    display:grid;
+
+    grid-template-columns:repeat(2,1fr);
+
+    gap:35px;
+
+    margin-top:60px;
+
+}
+
+
+.mission-card{
+
+    padding:45px;
+
+    background:#112e42;
+
+    border-radius:18px;
+
+    border:1px solid rgba(255,255,255,.08);
+
+    transition:.4s;
+
+}
+
+
+.mission-card:hover{
+
+    transform:translateY(-8px);
+
+    border-color:#00abf0;
+
+    box-shadow:0 0 30px rgba(0,171,240,.25);
+
+}
+
+
+.mission-icon{
+
+    font-size:50px;
+
+    margin-bottom:20px;
+
+}
+
+
+.mission-card h3{
+
+    color:white;
+
+    font-size:27px;
+
+    margin-bottom:15px;
+
+}
+
+
+.mission-card p{
+
+    color:#c5ced5;
+
+    line-height:1.9;
+
+}
+
+
+
+/* =====================================
+   CORE VALUES
+===================================== */
+
+.values-section{
+
+    padding:110px 10%;
+
+    background:#07131f;
+
+}
+
+
+.values-grid{
+
+    display:grid;
+
+    grid-template-columns:repeat(4,1fr);
+
+    gap:25px;
+
+    margin-top:60px;
+
+}
+
+
+.value-card{
+
+    padding:35px 25px;
+
+    text-align:center;
+
+    background:#0d1f2e;
+
+    border-radius:16px;
+
+    border:1px solid rgba(255,255,255,.08);
+
+    transition:.4s;
+
+}
+
+
+.value-card:hover{
+
+    transform:translateY(-8px);
+
+    border-color:#00abf0;
+
+    box-shadow:0 0 25px rgba(0,171,240,.25);
+
+}
+
+
+.value-icon{
+
+    font-size:45px;
+
+    margin-bottom:18px;
+
+}
+
+
+.value-card h3{
+
+    color:white;
+
+    font-size:22px;
+
+    margin-bottom:12px;
+
+}
+
+
+.value-card p{
+
+    color:#b9c4cd;
+
+    line-height:1.7;
+
+}
+
+
+
+/* =====================================
+   ABOUT WHY
+===================================== */
+
+.about-why{
+
+    padding:110px 10%;
+
+    background:#081b29;
+
+}
+
+
+.about-why-content{
+
+    max-width:850px;
+
+}
+
+
+.about-why h2{
+
+    color:white;
+
+    font-size:46px;
+
+    margin-bottom:25px;
+
+}
+
+
+.about-why p{
+
+    color:#c5ced5;
+
+    font-size:17px;
+
+    line-height:1.9;
+
+    margin-bottom:20px;
+
+}
+
+
+.about-why .btn-primary{
+
+    display:inline-block;
+
+    margin-top:20px;
+
+}
+
+
+
+/* =====================================
+   ABOUT CTA
+===================================== */
+
+.about-cta{
+
+    padding:100px 10%;
+
+    text-align:center;
+
+    background:
+
+        linear-gradient(
+            rgba(0,30,50,.92),
+            rgba(0,20,35,.95)
+        );
+
+}
+
+
+.about-cta > div{
+
+    max-width:800px;
+
+    margin:auto;
+
+}
+
+
+.about-cta h2{
+
+    color:white;
+
+    font-size:44px;
+
+    margin-bottom:20px;
+
+}
+
+
+.about-cta p{
+
+    color:#c4cdd5;
+
+    font-size:18px;
+
+    line-height:1.8;
+
+    margin-bottom:30px;
+
+}
+
+
+.about-cta .btn-primary{
+
+    display:inline-block;
+
+}
+
+
+
+/* =====================================
+   ABOUT PAGE RESPONSIVE
+===================================== */
+
+@media (max-width:992px){
+
+    .about-introduction{
+
+        grid-template-columns:1fr;
+
+    }
+
+
+    .values-grid{
+
+        grid-template-columns:repeat(2,1fr);
+
+    }
+
+
+    .page-hero h1{
+
+        font-size:50px;
+
+    }
+
+}
+
+
+@media (max-width:768px){
+
+    .page-hero{
+
+        min-height:60vh;
+
+        padding:110px 6% 70px;
+
+    }
+
+
+    .page-hero h1{
+
+        font-size:40px;
+
+    }
+
+
+    .about-introduction{
+
+        padding:80px 6%;
+
+    }
+
+
+    .about-text h2{
+
+        font-size:36px;
+
+    }
+
+
+    .mission-vision{
+
+        padding:80px 6%;
+
+    }
+
+
+    .mission-grid{
+
+        grid-template-columns:1fr;
+
+    }
+
+
+    .values-section{
+
+        padding:80px 6%;
+
+    }
+
+
+    .values-grid{
+
+        grid-template-columns:1fr;
+
+    }
+
+
+    .about-why{
+
+        padding:80px 6%;
+
+    }
+
+
+    .about-why h2{
+
+        font-size:36px;
+
+    }
+
+
+    .about-cta{
+
+        padding:80px 6%;
+
+    }
+
+
+    .about-cta h2{
+
+        font-size:34px;
+
+    }
+
+}
+
+
+@media (max-width:480px){
+
+    .page-hero h1{
+
+        font-size:34px;
+
+    }
+
+
+    .mission-card{
+
+        padding:30px 25px;
+
+    }
+
+
+    .about-highlight-card{
+
+        padding:40px 25px;
+
+    }
+
+}

@@ -1,0 +1,42 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>CyberShield — Manage Customers</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link rel="stylesheet" href="portal.css">
+</head>
+<body class="dashboard-body">
+
+    <nav class="dashboard-nav">
+        <div class="nav-brand">
+            <img src="logo.png" alt="CyberShield">
+            <span>CyberShield</span>
+        </div>
+        <div class="nav-links">
+            <a href="admin-dashboard.html" class="nav-link">Dashboard</a>
+            <a href="admin-customers.html" class="nav-link active">Customers</a>
+            <a href="admin-contacts.html" class="nav-link">Contacts</a>
+            <a href="admin-requests.html" class="nav-link">Requests</a>
+            <a href="admin-users.html" class="nav-link">Users</a>
+            <a href="admin-assets.html" class="nav-link">Assets</a>
+            <a href="admin-alerts.html" class="nav-link">Alerts</a>
+            <a href="admin-audit-logs.html" class="nav-link">Audit Log</a>
+            <button id="logoutBtn" class="logout-btn">Log Out</button>
+        </div>
+    </nav>
+
+    <main class="dashboard-main">
+        <h1>Manage Customers</h1>
+
+        <div id="customersTableWrapper">
+            <p>Loading customers...</p>
+        </div>
+    </main>
+
+    <script src="js/config.js"></script>
+    <script src="portal.js"></script>
+</body>
+</html>
