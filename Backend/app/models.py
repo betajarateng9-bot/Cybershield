@@ -69,6 +69,9 @@ class User(Base):
 
      failed_login_attempts = Column(Integer, default=0)
      locked_until = Column(DateTime, nullable=True)
+
+     email_verified = Column(Boolean, default=False)
+     verification_code = Column(String(6), nullable=True)
      
 
 class ServiceRequest(Base):
