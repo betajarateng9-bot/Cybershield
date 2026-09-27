@@ -23,17 +23,7 @@ async function requireAuth() {
         window.location.href = "login.html";
         return null;
     }
-
-    try {
-        const data = await fetchCurrentUser(token);
-        return { token, user: data };
-    } catch (e) {
-        // Token invalid or network error — force re-login
-        localStorage.removeItem("accessToken");
-        localStorage.removeItem("userRole");
-        window.location.href = "login.html";
-        return null;
-    }
+    return { token };
 }
 
 // ==================================================
