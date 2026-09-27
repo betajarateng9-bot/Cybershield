@@ -1,4 +1,4 @@
-const API_BASE_URL = (typeof CONFIG !== 'undefined') ? CONFIG.API_BASE_URL : "https://cybershield-api.onrender.com";
+const API_BASE_URL = (typeof CONFIG !== 'undefined') ? CONFIG.API_BASE_URL : "https://cybershield-backend-f2sd.onrender.com";
 
 // ==================================================
 // LOGIN
