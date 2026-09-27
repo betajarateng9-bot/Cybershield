@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>CyberShield — Asset Inventory</title>
+    <title>CyberShield — Register Client</title>
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link rel="stylesheet" href="portal.css">
@@ -17,11 +17,11 @@
         <div class="nav-links">
             <a href="admin-dashboard.html" class="nav-link">Dashboard</a>
             <a href="admin-customers.html" class="nav-link">Customers</a>
-            <a href="admin-register-client.html" class="nav-link">Register Client</a>
+            <a href="admin-register-client.html" class="nav-link active">Register Client</a>
             <a href="admin-contacts.html" class="nav-link">Contacts</a>
             <a href="admin-requests.html" class="nav-link">Requests</a>
             <a href="admin-users.html" class="nav-link">Users</a>
-            <a href="admin-assets.html" class="nav-link active">Assets</a>
+            <a href="admin-assets.html" class="nav-link">Assets</a>
             <a href="admin-alerts.html" class="nav-link">Alerts</a>
             <a href="admin-audit-logs.html" class="nav-link">Audit Log</a>
             <button id="logoutBtn" class="logout-btn">Log Out</button>
@@ -29,27 +29,30 @@
     </nav>
 
     <main class="dashboard-main">
-        <h1>Asset Inventory</h1>
+        <h1>Register New Client</h1>
 
         <div class="request-form-card">
-            <h3>Register a New Asset</h3>
-            <form id="assetForm">
-                <label for="assetCustomerId">Customer ID</label>
-                <input type="number" id="assetCustomerId" required>
+            <h3>Client Registration</h3>
+            <form id="registerClientForm">
+                <label for="fullName">Full Name</label>
+                <input type="text" id="fullName" placeholder="e.g. John Smith" required>
 
-                <label for="assetName">Asset Name</label>
-                <input type="text" id="assetName" placeholder="e.g. Main Web Server" required>
+                <label for="email">Email</label>
+                <input type="email" id="email" placeholder="e.g. john@example.com" required>
 
-                <label for="assetTarget">Target (hostname or IP)</label>
-                <input type="text" id="assetTarget" placeholder="e.g. 127.0.0.1" required>
+                <label for="phone">Phone</label>
+                <input type="tel" id="phone" placeholder="e.g. +1 555-0123" required>
 
-                <button type="submit">Register Asset</button>
-                <p id="assetError" class="error"></p>
+                <label for="organization">Organization</label>
+                <input type="text" id="organization" placeholder="e.g. Acme Corp">
+
+                <label for="industry">Industry</label>
+                <input type="text" id="industry" placeholder="e.g. Finance, Healthcare, Retail">
+
+                <button type="submit">Register Client</button>
+                <p id="registerClientError" class="error"></p>
+                <p id="registerClientSuccess" style="color: #3fb950; margin-top: 10px; font-size: 14px;"></p>
             </form>
-        </div>
-
-        <div id="assetsTableWrapper">
-            <p>Loading assets...</p>
         </div>
     </main>
 

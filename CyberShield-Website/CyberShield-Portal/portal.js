@@ -1,10 +1,48 @@
 const API_BASE_URL = (typeof CONFIG !== 'undefined') ? CONFIG.API_BASE_URL : "https://cybershield-etkt.onrender.com";
 
 // ==================================================
-// LOGIN
-// Only runs if this page has a login form
+// HELPER: Fetch current user profile
 // ==================================================
+function fetchCurrentUser(token) {
+    return fetch(`${API_BASE_URL}/me`, {
+        method: "GET",
+        headers: { "Authorization": `Bearer ${token}` }
+    }).then(response => {
+        if (!response.ok) throw new Error("Could not load profile");
+        return response.json();
+    });
+}
 
+// ==================================================
+// HELPER: Check auth + verification and redirect if needed
+// Call this on protected pages (dashboard, profile, requests, etc.)
+// ==================================================
+async function requireAuthAndVerified() {
+    const token = localStorage.getItem("accessToken");
+    if (!token) {
+        window.location.href = "login.html";
+        return null;
+    }
+
+    try {
+        const data = await fetchCurrentUser(token);
+        if (!data.is_email_verified) {
+            window.location.href = "verify.html";
+            return null;
+        }
+        return { token, user: data };
+    } catch (e) {
+        // Token invalid or network error — force re-login
+        localStorage.removeItem("accessToken");
+        localStorage.removeItem("userRole");
+        window.location.href = "login.html";
+        return null;
+    }
+}
+
+// ==================================================
+// LOGIN
+// ==================================================
 const loginForm = document.getElementById("loginForm");
 
 if (loginForm) {
@@ -20,9 +58,7 @@ if (loginForm) {
         try {
             const response = await fetch(`${API_BASE_URL}/login`, {
                 method: "POST",
-                headers: {
-                    "Content-Type": "application/json"
-                },
+                headers: { "Content-Type": "application/json" },
                 body: JSON.stringify({ email, password })
             });
 
@@ -53,9 +89,8 @@ if (loginForm) {
 }
 
 // ==================================================
-// REGISTRATION
+// REGISTRATION — now redirects to verify page
 // ==================================================
-
 const registerForm = document.getElementById("registerForm");
 
 if (registerForm) {
@@ -77,9 +112,7 @@ if (registerForm) {
         try {
             const response = await fetch(`${API_BASE_URL}/register`, {
                 method: "POST",
-                headers: {
-                    "Content-Type": "application/json"
-                },
+                headers: { "Content-Type": "application/json" },
                 body: JSON.stringify(payload)
             });
 
@@ -90,10 +123,12 @@ if (registerForm) {
                 return;
             }
 
+            // Store auth so verify page can use it
             localStorage.setItem("accessToken", data.access_token);
             localStorage.setItem("userRole", data.role);
 
-            window.location.href = "dashboard.html";
+            // Redirect to email verification page
+            window.location.href = "verify.html";
 
         } catch (error) {
             if (error.message === "Failed to fetch") {
@@ -105,25 +140,118 @@ if (registerForm) {
     });
 }
 
+// ==================================================
+// EMAIL VERIFICATION
+// ==================================================
+const verifyForm = document.getElementById("verifyForm");
+
+if (verifyForm) {
+    verifyForm.addEventListener("submit", async function (e) {
+        e.preventDefault();
+
+        const errorMessage = document.getElementById("errorMessage");
+        errorMessage.textContent = "";
+
+        const code = document.getElementById("verificationCode").value.trim();
+        const token = localStorage.getItem("accessToken");
+
+        if (!token) {
+            window.location.href = "register.html";
+            return;
+        }
+
+        if (code.length !== 6) {
+            errorMessage.textContent = "Please enter the 6-digit verification code.";
+            return;
+        }
+
+        try {
+            const response = await fetch(`${API_BASE_URL}/verify-email`, {
+                method: "POST",
+                headers: {
+                    "Content-Type": "application/json",
+                    "Authorization": `Bearer ${token}`
+                },
+                body: JSON.stringify({ code })
+            });
+
+            const data = await response.json();
+
+            if (!response.ok) {
+                errorMessage.textContent = data.detail || "Verification failed. Please try again.";
+                return;
+            }
+
+            window.location.href = "dashboard.html";
+
+        } catch (error) {
+            if (error.message === "Failed to fetch") {
+                errorMessage.textContent = "Cannot connect to CyberShield server. Please try again later.";
+            } else {
+                errorMessage.textContent = error.message || "Could not verify your email.";
+            }
+        }
+    });
+}
+
+// Resend verification code
+const resendCodeLink = document.getElementById("resendCode");
+
+if (resendCodeLink) {
+    resendCodeLink.addEventListener("click", async function (e) {
+        e.preventDefault();
+
+        const token = localStorage.getItem("accessToken");
+        if (!token) {
+            window.location.href = "register.html";
+            return;
+        }
+
+        try {
+            const response = await fetch(`${API_BASE_URL}/resend-verification`, {
+                method: "POST",
+                headers: { "Authorization": `Bearer ${token}` }
+            });
+
+            if (response.ok) {
+                alert("A new verification code has been sent to your email.");
+            } else {
+                const data = await response.json();
+                alert(data.detail || "Could not resend the verification code. Please try again.");
+            }
+        } catch (error) {
+            alert("Could not connect to the server. Please try again later.");
+        }
+    });
+}
 
 // ==================================================
-// DASHBOARD PROTECTION + LOGOUT
-// Only runs if this page has a logout button (i.e. every logged-in page)
+// DASHBOARD PROTECTION + LOGOUT + WELCOME + RECENT ACTIVITY
 // ==================================================
 const logoutBtn = document.getElementById("logoutBtn");
 
 if (logoutBtn) {
     const token = localStorage.getItem("accessToken");
 
-    // If there's no token at all, someone reached this page without logging in
     if (!token) {
         window.location.href = "login.html";
-    }
+    } else {
+        // Check verification and load dashboard data
+        (async function () {
+            const auth = await requireAuthAndVerified();
+            if (!auth) return;
 
-    // welcomeMessage only exists on dashboard.html — guard against it being absent elsewhere
-    const welcomeMessage = document.getElementById("welcomeMessage");
-    if (welcomeMessage) {
-        welcomeMessage.textContent = "Logged in";
+            const { token: validToken, user } = auth;
+
+            // Set welcome message with user's name
+            const welcomeMessage = document.getElementById("welcomeMessage");
+            if (welcomeMessage) {
+                welcomeMessage.textContent = `Welcome back, ${user.full_name || 'Valued Customer'}!`;
+            }
+
+            // Fetch dynamic stats from the user's requests
+            fetchRecentActivity(validToken);
+        })();
     }
 
     logoutBtn.addEventListener("click", function () {
@@ -131,14 +259,9 @@ if (logoutBtn) {
 
         fetch(`${API_BASE_URL}/logout`, {
             method: "POST",
-            headers: {
-                "Authorization": `Bearer ${currentToken}`
-            }
+            headers: { "Authorization": `Bearer ${currentToken}` }
         })
-        .catch(() => {
-            // Even if the network call fails, still clear local state and redirect —
-            // the user's browser session should end regardless.
-        })
+        .catch(() => {})
         .finally(() => {
             localStorage.removeItem("accessToken");
             localStorage.removeItem("userRole");
@@ -146,10 +269,63 @@ if (logoutBtn) {
         });
     });
 }
+
+// ==================================================
+// DASHBOARD — Recent Activity
+// ==================================================
+async function fetchRecentActivity(token) {
+    const container = document.getElementById("recentActivity");
+    if (!container) return;
+
+    try {
+        const response = await fetch(`${API_BASE_URL}/requests/my`, {
+            method: "GET",
+            headers: { "Authorization": `Bearer ${token}` }
+        });
+
+        if (!response.ok) throw new Error("Could not load activity");
+
+        const requests = await response.json();
+
+        if (requests.length === 0) {
+            container.innerHTML = `
+                <div class="activity-empty">
+                    <span class="activity-empty-icon">📭</span>
+                    <p>No recent activity yet. Submit your first request to get started!</p>
+                </div>
+            `;
+            return;
+        }
+
+        const recent = requests.slice(0, 5);
+        container.innerHTML = recent.map(req => `
+            <div class="activity-item">
+                <div class="activity-icon">${getRequestIcon(req.request_type)}</div>
+                <div class="activity-details">
+                    <span class="activity-subject">${req.subject}</span>
+                    <span class="activity-type">${req.request_type.replace("_", " ")}</span>
+                </div>
+                <span class="request-status ${formatStatusClass(req.status)}">${req.status}</span>
+            </div>
+        `).join("");
+
+    } catch (error) {
+        container.innerHTML = `<p class="error">Could not load recent activity.</p>`;
+    }
+}
+
+function getRequestIcon(type) {
+    const icons = {
+        service: "🔧",
+        security_assessment: "🔍",
+        support_ticket: "🎫"
+    };
+    return icons[type] || "📋";
+}
+
 // ==================================================
 // PASSWORD SHOW/HIDE TOGGLE
 // ==================================================
-
 const togglePassword = document.getElementById("togglePassword");
 
 if (togglePassword) {
@@ -166,73 +342,125 @@ if (togglePassword) {
 }
 
 // ==================================================
-// PROFILE PAGE
-// Only runs if this page has the profileCard element
+// PROFILE PAGE — enhanced with avatar, header, edit
 // ==================================================
-
 const profileCard = document.getElementById("profileCard");
 
 if (profileCard) {
-    const token = localStorage.getItem("accessToken");
+    (async function () {
+        const auth = await requireAuthAndVerified();
+        if (!auth) return;
 
-    if (!token) {
-        window.location.href = "login.html";
-    } else {
-        fetch(`${API_BASE_URL}/me`, {
-            method: "GET",
-            headers: {
-                "Authorization": `Bearer ${token}`
+        const { user } = auth;
+
+        // Update profile header
+        const avatar = document.getElementById("profileAvatar");
+        if (avatar) {
+            avatar.textContent = (user.full_name || "U").charAt(0).toUpperCase();
+        }
+
+        const profileName = document.getElementById("profileName");
+        if (profileName) {
+            profileName.textContent = user.full_name || "Unknown";
+        }
+
+        const profileEmail = document.getElementById("profileEmail");
+        if (profileEmail) {
+            profileEmail.textContent = user.email || "—";
+        }
+
+        const profileBadge = document.getElementById("profileBadge");
+        if (profileBadge) {
+            if (user.status === "active" || user.is_email_verified) {
+                profileBadge.textContent = "✓ Active";
+                profileBadge.className = "profile-status-badge badge-active";
+            } else {
+                profileBadge.textContent = "Inactive";
+                profileBadge.className = "profile-status-badge badge-inactive";
             }
-        })
-        .then(response => {
-            if (!response.ok) {
-                throw new Error("Could not load profile");
+        }
+
+        // Render profile rows with icons
+        const rows = [
+            { icon: "👤", label: "Full Name", key: "full_name" },
+            { icon: "📧", label: "Email", key: "email" },
+            { icon: "📱", label: "Phone", key: "phone" },
+            { icon: "🏢", label: "Organization", key: "organization" },
+            { icon: "🏭", label: "Industry", key: "industry" },
+            { icon: "📍", label: "Address", key: "address" },
+            { icon: "📊", label: "Status", key: "status" }
+        ];
+
+        profileCard.innerHTML = rows.map(row => `
+            <div class="profile-row" data-field="${row.key}">
+                <span class="profile-label">
+                    <span class="profile-label-icon">${row.icon}</span>
+                    ${row.label}
+                </span>
+                <span class="profile-value">${user[row.key] || "—"}</span>
+            </div>
+        `).join("");
+    })();
+
+    // Edit Profile toggle
+    const editBtn = document.getElementById("editProfileBtn");
+    if (editBtn) {
+        editBtn.addEventListener("click", function () {
+            const rows = document.querySelectorAll(".profile-row[data-field]");
+            const isEditing = this.classList.contains("editing");
+
+            if (!isEditing) {
+                // Switch to edit mode
+                this.classList.add("editing");
+                this.textContent = "💾 Save Changes";
+                rows.forEach(row => {
+                    const field = row.dataset.field;
+                    const valueSpan = row.querySelector(".profile-value");
+                    const currentValue = valueSpan.textContent.trim();
+
+                    if (field === "status") return; // Don't allow editing status
+
+                    valueSpan.outerHTML = `
+                        <span class="profile-value">
+                            <input type="text" class="profile-edit-input" data-field="${field}" value="${currentValue === "—" ? "" : currentValue}">
+                        </span>
+                    `;
+                });
+            } else {
+                // Save changes
+                const inputs = document.querySelectorAll(".profile-edit-input");
+                const updates = {};
+                inputs.forEach(input => {
+                    updates[input.dataset.field] = input.value;
+                });
+
+                const token = localStorage.getItem("accessToken");
+                fetch(`${API_BASE_URL}/me`, {
+                    method: "PUT",
+                    headers: {
+                        "Content-Type": "application/json",
+                        "Authorization": `Bearer ${token}`
+                    },
+                    body: JSON.stringify(updates)
+                })
+                .then(response => {
+                    if (!response.ok) throw new Error("Update failed");
+                    return response.json();
+                })
+                .then(() => {
+                    window.location.reload();
+                })
+                .catch(() => {
+                    alert("Could not update your profile. Please try again.");
+                });
             }
-            return response.json();
-        })
-        .then(data => {
-            profileCard.innerHTML = `
-                <div class="profile-row">
-                    <span class="profile-label">Full Name</span>
-                    <span class="profile-value">${data.full_name}</span>
-                </div>
-                <div class="profile-row">
-                    <span class="profile-label">Email</span>
-                    <span class="profile-value">${data.email}</span>
-                </div>
-                <div class="profile-row">
-                    <span class="profile-label">Phone</span>
-                    <span class="profile-value">${data.phone}</span>
-                </div>
-                <div class="profile-row">
-                    <span class="profile-label">Organization</span>
-                    <span class="profile-value">${data.organization || "—"}</span>
-                </div>
-                <div class="profile-row">
-                    <span class="profile-label">Industry</span>
-                    <span class="profile-value">${data.industry || "—"}</span>
-                </div>
-                <div class="profile-row">
-                    <span class="profile-label">Address</span>
-                    <span class="profile-value">${data.address || "—"}</span>
-                </div>
-                <div class="profile-row">
-                    <span class="profile-label">Status</span>
-                    <span class="profile-value">${data.status}</span>
-                </div>
-            `;
-        })
-        .catch(error => {
-            profileCard.innerHTML = `<p class="error">Could not load your profile. Please try logging in again.</p>`;
         });
     }
 }
 
 // ==================================================
 // REQUESTS PAGE — submit and list
-// Only runs if this page has the requestForm
 // ==================================================
-
 const requestForm = document.getElementById("requestForm");
 const requestsList = document.getElementById("requestsList");
 
@@ -243,14 +471,10 @@ function formatStatusClass(status) {
 function loadMyRequests(token) {
     fetch(`${API_BASE_URL}/requests/my`, {
         method: "GET",
-        headers: {
-            "Authorization": `Bearer ${token}`
-        }
+        headers: { "Authorization": `Bearer ${token}` }
     })
     .then(response => {
-        if (!response.ok) {
-            throw new Error("Could not load requests");
-        }
+        if (!response.ok) throw new Error("Could not load requests");
         return response.json();
     })
     .then(data => {
@@ -276,57 +500,55 @@ function loadMyRequests(token) {
 }
 
 if (requestForm) {
-    const token = localStorage.getItem("accessToken");
+    (async function () {
+        const auth = await requireAuthAndVerified();
+        if (!auth) return;
 
-    if (!token) {
-        window.location.href = "login.html";
-    } else {
+        const { token } = auth;
         loadMyRequests(token);
-    }
 
-    requestForm.addEventListener("submit", async function (e) {
-        e.preventDefault();
+        requestForm.addEventListener("submit", async function (e) {
+            e.preventDefault();
 
-        const requestError = document.getElementById("requestError");
-        requestError.textContent = "";
+            const requestError = document.getElementById("requestError");
+            requestError.textContent = "";
 
-        const payload = {
-            request_type: document.getElementById("requestType").value,
-            subject: document.getElementById("subject").value,
-            description: document.getElementById("description").value
-        };
+            const payload = {
+                request_type: document.getElementById("requestType").value,
+                subject: document.getElementById("subject").value,
+                description: document.getElementById("description").value
+            };
 
-        try {
-            const response = await fetch(`${API_BASE_URL}/requests`, {
-                method: "POST",
-                headers: {
-                    "Content-Type": "application/json",
-                    "Authorization": `Bearer ${token}`
-                },
-                body: JSON.stringify(payload)
-            });
+            try {
+                const response = await fetch(`${API_BASE_URL}/requests`, {
+                    method: "POST",
+                    headers: {
+                        "Content-Type": "application/json",
+                        "Authorization": `Bearer ${token}`
+                    },
+                    body: JSON.stringify(payload)
+                });
 
-            const data = await response.json();
+                const data = await response.json();
 
-            if (!response.ok) {
-                requestError.textContent = data.detail || "Could not submit request.";
-                return;
+                if (!response.ok) {
+                    requestError.textContent = data.detail || "Could not submit request.";
+                    return;
+                }
+
+                requestForm.reset();
+                loadMyRequests(token);
+
+            } catch (error) {
+                requestError.textContent = "Could not connect to the server.";
             }
-
-            requestForm.reset();
-            loadMyRequests(token);
-
-        } catch (error) {
-            requestError.textContent = "Could not connect to the server.";
-        }
-    });
+        });
+    })();
 }
 
 // ==================================================
 // ADMIN DASHBOARD — stats
-// Only runs if this page has statsGrid
 // ==================================================
-
 const statsGrid = document.getElementById("statsGrid");
 
 if (statsGrid) {
@@ -338,46 +560,49 @@ if (statsGrid) {
     } else {
         fetch(`${API_BASE_URL}/admin/stats`, {
             method: "GET",
-            headers: {
-                "Authorization": `Bearer ${token}`
-            }
+            headers: { "Authorization": `Bearer ${token}` }
         })
         .then(response => {
-            if (!response.ok) {
-                throw new Error("Could not load stats");
-            }
+            if (!response.ok) throw new Error("Could not load stats");
             return response.json();
         })
         .then(data => {
             statsGrid.innerHTML = `
-                <div class="stat-box">
+                <div class="stat-box stat-blue">
+                    <div class="stat-icon">👥</div>
                     <h2>${data.total_customers}</h2>
                     <p>Total Customers</p>
                 </div>
-                <div class="stat-box">
+                <div class="stat-box stat-green">
+                    <div class="stat-icon">📞</div>
                     <h2>${data.total_contacts}</h2>
                     <p>Total Contacts</p>
                 </div>
-                <div class="stat-box">
+                <div class="stat-box stat-orange">
+                    <div class="stat-icon">⏳</div>
                     <h2>${data.pending_requests}</h2>
                     <p>Pending Requests</p>
                 </div>
-                <div class="stat-box">
+                <div class="stat-box stat-purple">
+                    <div class="stat-icon">🔄</div>
                     <h2>${data.active_requests}</h2>
                     <p>Active Cases</p>
                 </div>
-                <div class="stat-box">
+                <div class="stat-box stat-teal">
+                    <div class="stat-icon">✅</div>
                     <h2>${data.approved_requests}</h2>
                     <p>Approved / Completed</p>
                 </div>
-                <div class="stat-box">
+                <div class="stat-box stat-blue">
+                    <div class="stat-icon">📊</div>
                     <h2>${data.total_requests}</h2>
                     <p>Total Requests</p>
                 </div>
-               <div class="stat-box">
+                <div class="stat-box stat-red">
+                    <div class="stat-icon">🚨</div>
                     <h2>${data.unacknowledged_alerts}</h2>
-                     <p>Unacknowledged Alerts</p>
-                 </div> 
+                    <p>Unacknowledged Alerts</p>
+                </div>
             `;
         })
         .catch(error => {
@@ -387,10 +612,65 @@ if (statsGrid) {
 }
 
 // ==================================================
-// ADMIN — CUSTOMER MANAGEMENT
-// Only runs if this page has customersTableWrapper
+// ADMIN — REGISTER NEW CLIENT
+// Only runs if this page has registerClientForm
 // ==================================================
 
+const registerClientForm = document.getElementById("registerClientForm");
+
+if (registerClientForm) {
+    const token = requireAdminOrRedirect();
+    if (token) {
+        registerClientForm.addEventListener("submit", async function (e) {
+            e.preventDefault();
+
+            const errorEl = document.getElementById("registerClientError");
+            const successEl = document.getElementById("registerClientSuccess");
+            errorEl.textContent = "";
+            successEl.textContent = "";
+
+            const payload = {
+                full_name: document.getElementById("fullName").value,
+                email: document.getElementById("email").value,
+                phone: document.getElementById("phone").value,
+                organization: document.getElementById("organization").value || null,
+                industry: document.getElementById("industry").value || null
+            };
+
+            try {
+                const response = await fetch(`${API_BASE_URL}/customers`, {
+                    method: "POST",
+                    headers: {
+                        "Content-Type": "application/json",
+                        "Authorization": `Bearer ${token}`
+                    },
+                    body: JSON.stringify(payload)
+                });
+
+                const data = await response.json();
+
+                if (!response.ok) {
+                    errorEl.textContent = data.detail || "Could not register client.";
+                    return;
+                }
+
+                successEl.textContent = "Client registered successfully!";
+                registerClientForm.reset();
+
+            } catch (error) {
+                if (error.message === "Failed to fetch") {
+                    errorEl.textContent = "Cannot connect to CyberShield server. Please check your internet connection.";
+                } else {
+                    errorEl.textContent = error.message || "Could not connect to the server.";
+                }
+            }
+        });
+    }
+}
+
+// ==================================================
+// ADMIN — CUSTOMER MANAGEMENT
+// ==================================================
 const customersTableWrapper = document.getElementById("customersTableWrapper");
 
 function requireAdminOrRedirect() {
@@ -533,9 +813,7 @@ if (customersTableWrapper) {
 
 // ==================================================
 // ADMIN — CONTACT MANAGEMENT
-// Only runs if this page has contactsTableWrapper
 // ==================================================
-
 const contactsTableWrapper = document.getElementById("contactsTableWrapper");
 
 function loadContacts(token) {
@@ -621,9 +899,7 @@ if (contactsTableWrapper) {
 
 // ==================================================
 // ADMIN — REQUEST MANAGEMENT
-// Only runs if this page has requestsTableWrapper
 // ==================================================
-
 const requestsTableWrapper = document.getElementById("requestsTableWrapper");
 
 function statusToLabel(status) {
@@ -718,9 +994,7 @@ if (requestsTableWrapper) {
 
 // ==================================================
 // ADMIN — USER MANAGEMENT (read-only list)
-// Only runs if this page has usersTableWrapper
 // ==================================================
-
 const usersTableWrapper = document.getElementById("usersTableWrapper");
 
 if (usersTableWrapper) {
@@ -774,9 +1048,7 @@ if (usersTableWrapper) {
 
 // ==================================================
 // ADMIN — ASSET INVENTORY & SCANNING
-// Only runs if this page has assetsTableWrapper
 // ==================================================
-
 const assetsTableWrapper = document.getElementById("assetsTableWrapper");
 const assetForm = document.getElementById("assetForm");
 
@@ -878,7 +1150,7 @@ function runAssetScan(assetId) {
         `).join("");
 
         resultsCell.innerHTML = `
-            <p><strong>Scan complete</strong> — ${result.open_ports_count} open port(s) found, highest risk: 
+            <p><strong>Scan complete</strong> — ${result.open_ports_count} open port(s) found, highest risk:
                 <span class="${riskClass(result.highest_risk)}">${result.highest_risk.toUpperCase()}</span>
             </p>
             <ul class="scan-findings">${findingsList}</ul>
@@ -954,9 +1226,7 @@ if (assetForm) {
 
 // ==================================================
 // ADMIN — SECURITY ALERTS
-// Only runs if this page has alertsTableWrapper
 // ==================================================
-
 const alertsTableWrapper = document.getElementById("alertsTableWrapper");
 
 function loadAlerts(token) {
@@ -1036,9 +1306,7 @@ if (alertsTableWrapper) {
 
 // ==================================================
 // ADMIN — SCAN HISTORY
-// Only runs if this page has loadHistoryBtn
 // ==================================================
-
 const loadHistoryBtn = document.getElementById("loadHistoryBtn");
 const scanHistoryWrapper = document.getElementById("scanHistoryWrapper");
 
@@ -1101,9 +1369,7 @@ if (loadHistoryBtn) {
 
 // ==================================================
 // ADMIN — AUDIT LOG
-// Only runs if this page has auditLogWrapper
 // ==================================================
-
 const auditLogWrapper = document.getElementById("auditLogWrapper");
 
 if (auditLogWrapper) {

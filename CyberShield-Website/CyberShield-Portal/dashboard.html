@@ -13,7 +13,6 @@
     <nav class="dashboard-nav">
         <div class="nav-brand">
             <img src="logo.png" alt="CyberShield">
-            <span>CyberShield</span>
         </div>
         <div class="nav-links">
             <a href="dashboard.html" class="nav-link active">Dashboard</a>
@@ -24,23 +23,62 @@
     </nav>
 
     <main class="dashboard-main dashboard-bg">
-        <h1>Welcome to your Dashboard</h1>
-        <p>This is your CyberShield customer portal. From here you'll be able to manage service requests, track tickets, and view your account.</p>
 
-        <div class="stats-grid" style="margin-top: 40px;">
-            <div class="stat-box">
-                <h2>3</h2>
+        <!-- Hero Section -->
+        <section class="hero-section">
+            <div class="hero-content">
+                <h1 id="welcomeMessage">Welcome back!</h1>
+                <p class="hero-subtitle">Your security overview at a glance. Manage services, track requests, and stay protected.</p>
+            </div>
+            <div class="hero-shield">🛡️</div>
+        </section>
+
+        <!-- Stats Grid -->
+        <div class="stats-grid" style="margin-top: 30px;">
+            <div class="stat-box stat-blue">
+                <div class="stat-icon">🔧</div>
+                <h2 id="statServices">3</h2>
                 <p>Active Services</p>
             </div>
-            <div class="stat-box">
+            <div class="stat-box stat-green">
+                <div class="stat-icon">👁️</div>
                 <h2>24/7</h2>
                 <p>Monitoring</p>
             </div>
-            <div class="stat-box">
+            <div class="stat-box stat-purple">
+                <div class="stat-icon">🔒</div>
                 <h2>100%</h2>
                 <p>Protection</p>
             </div>
         </div>
+
+        <!-- Quick Actions -->
+        <section class="quick-actions-section">
+            <h2 class="section-title">⚡ Quick Actions</h2>
+            <div class="quick-actions-grid">
+                <a href="requests.html" class="quick-action-btn">
+                    <span class="qa-icon">📝</span>
+                    <span class="qa-label">Submit Request</span>
+                </a>
+                <a href="profile.html" class="quick-action-btn">
+                    <span class="qa-icon">👤</span>
+                    <span class="qa-label">View Profile</span>
+                </a>
+                <a href="requests.html" class="quick-action-btn">
+                    <span class="qa-icon">📋</span>
+                    <span class="qa-label">My Requests</span>
+                </a>
+            </div>
+        </section>
+
+        <!-- Recent Activity -->
+        <section class="recent-activity-section">
+            <h2 class="section-title">🕐 Recent Activity</h2>
+            <div id="recentActivity" class="recent-activity-list">
+                <p style="color: #8899aa;">Loading recent activity...</p>
+            </div>
+        </section>
+
     </main>
 
     <script src="js/config.js"></script>
