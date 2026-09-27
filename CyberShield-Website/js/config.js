@@ -4,5 +4,5 @@
    ===================================== */
 
 const CONFIG = {
-    API_BASE_URL: "https://cybershield-backend.up.railway.app",
+    API_BASE_URL: "https://cybershield-backend-f2sd.onrender.com",
 };
