@@ -43,6 +43,35 @@ logger = logging.getLogger("cybershield")
 # LIFESPAN - Startup/Shutdown Events
 # ==================================================
 
+def create_default_admin():
+    """Create default admin user if none exists."""
+    db = SessionLocal()
+    try:
+        admin_email = "betajarateng9@gmail.com"
+        admin_password = "0758411418@Bj"
+
+        existing = db.query(models.User).filter(models.User.email == admin_email).first()
+
+        if existing:
+            logger.info(f"Admin user already exists: {admin_email}")
+            return
+
+        admin = models.User(
+            email=admin_email,
+            hashed_password=security.hash_password(admin_password),
+            role="admin",
+            is_active=True
+        )
+
+        db.add(admin)
+        db.commit()
+        logger.info(f"Default admin user created: {admin_email}")
+    except Exception as e:
+        logger.error(f"Failed to create admin user: {e}")
+    finally:
+        db.close()
+
+
 @asynccontextmanager
 async def lifespan(app_instance: FastAPI):
     """Handle startup and shutdown events."""
@@ -52,6 +81,9 @@ async def lifespan(app_instance: FastAPI):
     logger.info(f"Environment: {'production' if os.getenv('RENDER') else 'development'}")
     logger.info(f"Port: {os.getenv('PORT', '8000')}")
     logger.info("=" * 50)
+
+    # Create default admin user
+    create_default_admin()
 
     yield
 
