@@ -1238,16 +1238,6 @@ div[id$="TableWrapper"], div[id$="Wrapper"] {
 }
 
 /* =====================================
-   VERIFY PAGE — code input enhancement
-   ===================================== */
-#verificationCode {
-    letter-spacing: 8px;
-    font-size: 24px;
-    font-weight: 700;
-    text-align: center;
-}
-
-/* =====================================
    DASHBOARD — ANIMATED BACKGROUND
    ===================================== */
 .dashboard-bg {

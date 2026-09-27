@@ -14,10 +14,10 @@ function fetchCurrentUser(token) {
 }
 
 // ==================================================
-// HELPER: Check auth + verification and redirect if needed
+// HELPER: Check auth and redirect if needed
 // Call this on protected pages (dashboard, profile, requests, etc.)
 // ==================================================
-async function requireAuthAndVerified() {
+async function requireAuth() {
     const token = localStorage.getItem("accessToken");
     if (!token) {
         window.location.href = "login.html";
@@ -26,10 +26,6 @@ async function requireAuthAndVerified() {
 
     try {
         const data = await fetchCurrentUser(token);
-        if (data.is_email_verified === false) {
-            window.location.href = "verify.html";
-            return null;
-        }
         return { token, user: data };
     } catch (e) {
         // Token invalid or network error — force re-login
@@ -123,12 +119,12 @@ if (registerForm) {
                 return;
             }
 
-            // Store auth so verify page can use it
+            // Store auth token
             localStorage.setItem("accessToken", data.access_token);
             localStorage.setItem("userRole", data.role);
 
-            // Redirect to email verification page
-            window.location.href = "verify.html";
+            // Redirect to dashboard
+            window.location.href = "dashboard.html";
 
         } catch (error) {
             if (error.message === "Failed to fetch") {
@@ -136,91 +132,6 @@ if (registerForm) {
             } else {
                 errorMessage.textContent = error.message || "Could not connect to the server.";
             }
-        }
-    });
-}
-
-// ==================================================
-// EMAIL VERIFICATION
-// ==================================================
-const verifyForm = document.getElementById("verifyForm");
-
-if (verifyForm) {
-    verifyForm.addEventListener("submit", async function (e) {
-        e.preventDefault();
-
-        const errorMessage = document.getElementById("errorMessage");
-        errorMessage.textContent = "";
-
-        const code = document.getElementById("verificationCode").value.trim();
-        const token = localStorage.getItem("accessToken");
-
-        if (!token) {
-            window.location.href = "register.html";
-            return;
-        }
-
-        if (code.length !== 6) {
-            errorMessage.textContent = "Please enter the 6-digit verification code.";
-            return;
-        }
-
-        try {
-            const response = await fetch(`${API_BASE_URL}/verify-email`, {
-                method: "POST",
-                headers: {
-                    "Content-Type": "application/json",
-                    "Authorization": `Bearer ${token}`
-                },
-                body: JSON.stringify({ code })
-            });
-
-            const data = await response.json();
-
-            if (!response.ok) {
-                errorMessage.textContent = data.detail || "Verification failed. Please try again.";
-                return;
-            }
-
-            window.location.href = "dashboard.html";
-
-        } catch (error) {
-            if (error.message === "Failed to fetch") {
-                errorMessage.textContent = "Cannot connect to CyberShield server. Please try again later.";
-            } else {
-                errorMessage.textContent = error.message || "Could not verify your email.";
-            }
-        }
-    });
-}
-
-// Resend verification code
-const resendCodeLink = document.getElementById("resendCode");
-
-if (resendCodeLink) {
-    resendCodeLink.addEventListener("click", async function (e) {
-        e.preventDefault();
-
-        const token = localStorage.getItem("accessToken");
-        if (!token) {
-            window.location.href = "register.html";
-            return;
-        }
-
-        try {
-            const response = await fetch(`${API_BASE_URL}/resend-verification`, {
-                method: "POST",
-                headers: { "Authorization": `Bearer ${token}` }
-            });
-
-            if (response.ok) {
-                alert("A new verification code has been sent to your email.");
-            } else {
-                const data = await response.json();
-                alert(data.detail || "Could not resend the verification code. Please try again.");
-            }
-        } catch (error) {
-            alert("Could not connect to the server. Please try again later.");
         }
     });
 }
@@ -238,7 +149,7 @@ if (logoutBtn) {
     } else {
         // Check verification and load dashboard data
         (async function () {
-            const auth = await requireAuthAndVerified();
+            const auth = await requireAuth();
             if (!auth) return;
 
             const { token: validToken, user } = auth;
@@ -348,7 +259,7 @@ const profileCard = document.getElementById("profileCard");
 
 if (profileCard) {
     (async function () {
-        const auth = await requireAuthAndVerified();
+        const auth = await requireAuth();
         if (!auth) return;
 
         const { user } = auth;
@@ -371,7 +282,7 @@ if (profileCard) {
 
         const profileBadge = document.getElementById("profileBadge");
         if (profileBadge) {
-            if (user.status === "active" || user.is_email_verified) {
+            if (user.status === "active") {
                 profileBadge.textContent = "✓ Active";
                 profileBadge.className = "profile-status-badge badge-active";
             } else {
@@ -501,7 +412,7 @@ function loadMyRequests(token) {
 
 if (requestForm) {
     (async function () {
-        const auth = await requireAuthAndVerified();
+        const auth = await requireAuth();
         if (!auth) return;
 
         const { token } = auth;

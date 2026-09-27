@@ -1,6 +1,5 @@
 import logging
 import os
-import random
 
 from fastapi import FastAPI, Depends, HTTPException, Request
 from fastapi.middleware.cors import CORSMiddleware
@@ -295,10 +294,6 @@ class UserResponse(BaseModel):
 class LoginRequest(BaseModel):
     email: str
     password: str
-
-
-class VerifyEmailRequest(BaseModel):
-    code: str
 
 
 class TokenResponse(BaseModel):
@@ -890,13 +885,6 @@ def register_customer(
     db.commit()
     db.refresh(new_user)
 
-    # Generate and store email verification code
-    code = str(random.randint(100000, 999999))
-    new_user.verification_code = code
-    db.commit()
-
-    logger.info(f"Verification code for {new_user.email}: {code}")
-
     token = security.create_access_token(
         data={"sub": str(new_user.id), "role": new_user.role}
     )
@@ -908,7 +896,7 @@ def register_customer(
     }
 
 
-@app.get("/me")
+@app.get("/me", response_model=CustomerResponse)
 def get_my_profile(
     db: Session = Depends(get_db),
     current_user: models.User = Depends(deps.get_current_user)
@@ -925,56 +913,7 @@ def get_my_profile(
     if not customer:
         raise HTTPException(status_code=404, detail="Customer record not found")
 
-    return {
-        "id": customer.id,
-        "full_name": customer.full_name,
-        "email": customer.email,
-        "phone": customer.phone,
-        "organization": customer.organization,
-        "industry": customer.industry,
-        "address": customer.address,
-        "notes": customer.notes,
-        "status": customer.status,
-        "created_at": customer.created_at,
-        "updated_at": customer.updated_at,
-        "is_email_verified": current_user.email_verified
-    }
-
-
-@app.post("/verify-email")
-def verify_email(
-    data: VerifyEmailRequest,
-    db: Session = Depends(get_db),
-    current_user: models.User = Depends(deps.get_current_user)
-):
-    if current_user.email_verified:
-        raise HTTPException(status_code=400, detail="Email already verified")
-
-    if current_user.verification_code != data.code:
-        raise HTTPException(status_code=400, detail="Invalid verification code")
-
-    current_user.email_verified = True
-    current_user.verification_code = None
-    db.commit()
-
-    return {"detail": "Email verified successfully"}
-
-
-@app.post("/resend-verification")
-def resend_verification(
-    db: Session = Depends(get_db),
-    current_user: models.User = Depends(deps.get_current_user)
-):
-    if current_user.email_verified:
-        raise HTTPException(status_code=400, detail="Email already verified")
-
-    new_code = str(random.randint(100000, 999999))
-    current_user.verification_code = new_code
-    db.commit()
-
-    logger.info(f"New verification code for {current_user.email}: {new_code}")
-
-    return {"detail": "Verification code resent"}
+    return customer
 
 
 # ==================================================
