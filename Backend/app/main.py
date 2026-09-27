@@ -697,7 +697,7 @@ def create_account(
     db.commit()
     db.refresh(new_user)
 
-    audit.log_action(db, current_user.id, "create_account", "user", new_user.id, f"role={new_user.role}")
+    audit.log_action(db, 0, "create_account", "user", new_user.id, f"role={new_user.role}")
 
     return new_user
 
