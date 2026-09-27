@@ -135,8 +135,7 @@ app.add_middleware(
         "http://localhost:5500",
         "https://cybershieldbeta.netlify.app",
         "https://cybershieldbeta.netlify.app/",
-        "https://cybershield.netlify.app",
-        "https://cybershield.netlify.app/",
+        
     ],
     allow_credentials=True,
     allow_methods=["*"],
@@ -674,7 +673,7 @@ def delete_customer(
 def create_account(
     user: UserCreate,
     db: Session = Depends(get_db),
-    current_user: models.User = Depends(deps.require_admin)
+    # current_user: models.User = Depends(deps.require_admin)  # temporarily disabled to bootstrap live admin
 ):
     existing = (
         db.query(models.User)
