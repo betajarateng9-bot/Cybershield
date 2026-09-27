@@ -26,7 +26,7 @@ async function requireAuthAndVerified() {
 
     try {
         const data = await fetchCurrentUser(token);
-        if (!data.is_email_verified) {
+        if (data.is_email_verified === false) {
             window.location.href = "verify.html";
             return null;
         }
